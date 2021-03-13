@@ -41,7 +41,7 @@
                     <span>
                         =
                     </span>
-                    <input type="number" required autocomplete="off"/>
+                    <input type="number" required autocomplete="off" id="result"/>
                 </div>
             </div>
 
@@ -63,6 +63,8 @@
         // Form data
         data() {
             return {
+                min: 1,
+                max: 100,
                 // Arithmetic operation values
                 exercise_type: 'addition',
                 a: null,
@@ -72,14 +74,24 @@
             }
         },
         methods: {
+            // Initialize arithmetic operation
             init: function() {
                 if(!this.a) {
-                    this.a = '1';
+                    this.a = this.getRandomInt(this.min, this.max);
                 }
 
                 if(!this.b) {
-                    this.b = '1';
+                    this.b = this.getRandomInt(this.min, this.max);
                 }
+            },
+            /**
+            * Returns a random integer between min (inclusive) and max (inclusive).
+            * Using Math.round() will a non-uniform distribution!
+            */
+            getRandomInt: function(min, max) {
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                return Math.floor(Math.random() * (max - min + 1)) + min;
             }
         },
         mounted: function() {
