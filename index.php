@@ -7,7 +7,9 @@
     <title>SOWISO</title>
     <meta name="description" content="SOWISO">
     <meta name="author" content="Nicole Sang-Ajang">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400" rel="stylesheet"> 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -17,65 +19,81 @@
 
 <body>
     <div id="app">
-        <div class="form">
-            <h1>
-                <span class="material-icons">
-                    assignment
-                </span>
-                Exercise {{ exercise_type }}
-            </h1>                    
-            
-            <!-- the submit event will no longer reload the page -->
-            <form v-on:submit.prevent="onSubmit">
-            
-            <div class="column">
-                <div class="field-wrap">
-                    <span>
-                        {{ a }}
-                    </span>
-                    <span>
-                        {{ operation }}
-                    </span>
-                    <span>
-                        {{ b }}
-                    </span>
-                    <span>
-                        =
-                    </span>
-                    <input v-model.number="result" type="number" required autocomplete="off" id="result"/>
-                </div>
-                <p v-bind:class="{ alert: message }">
-                    {{ message }}
-                </p>
+        <div class="logo">
+            <div class="gradient"></div>
+            <h4 class="text">{{ title }}</h4>
+        </div>
+        <div class="form-wrapper">
+            <hr class="gradient"/>
+            <div class="info-wrapper">
+                <h4>{{ description_title }}</h4>
+                <p>{{ description }}</p>
             </div>
 
-            <div class="button-wrap">
-            
-                <button v-on:click="reset" class="button button-block danger" formnovalidate/>
-                    <span class="material-icons">
-                        replay
-                    </span>
-                </button>
-                <button v-on:click="check" class="button button-block"/>Check</button>
-            
+            <div class="question-wrapper">
+                <div class="form">
+                    <h1>
+                        <span class="material-icons">
+                            calculate
+                        </span>
+                        Exercise
+                    </h1>                    
+                    
+                    <!-- the submit event will no longer reload the page -->
+                    <form v-on:submit.prevent="onSubmit">
+                    
+                    <div class="column">
+                        <div class="field-wrap">
+                            <span>
+                                {{ a }}
+                            </span>
+                            <span>
+                                {{ operation }}
+                            </span>
+                            <span>
+                                {{ b }}
+                            </span>
+                            <span>
+                                =
+                            </span>
+                            <input v-model.number="result" type="number" required autocomplete="off" id="result"/>
+                        </div>
+                        <p v-bind:class="{ alert: message }">
+                            {{ message }}
+                        </p>
+                    </div>
+
+                    <div class="button-wrap">
+                    
+                        <button v-on:click="reset" class="button button-block danger" formnovalidate/>
+                            <span class="material-icons">
+                                replay
+                            </span>
+                        </button>
+                        <button v-on:click="check" class="button button-block"/>Check</button>
+                    
+                    </div>
+                    
+                    </form>
+                    
+                </div><!-- tab-content -->
             </div>
-            
-            </form>
-            
-        </div><!-- tab-content -->
         
-    </div> <!-- /form -->
-    
+        </div> <!-- /form -->
+    </div>
+
     <script>
       const App = new Vue({
         el: '#app',
         // Form data
         data() {
             return {
+                title: 'SOWISO',
+                description_title: 'Homework',
+                description: 'These exercises will evaluate your arithmetic skills.',
                 min: 1,
-                max: 100,
+                max: 10,
                 // Arithmetic operation values
-                exercise_type: 'addition',
                 a: null,
                 operation: '+',
                 b: null,
@@ -86,6 +104,7 @@
         methods: {
             // Initialize arithmetic operation
             init: function() {
+
                 if(!this.a) {
                     this.a = this.getRandomInt(this.min, this.max);
                 }
@@ -115,6 +134,20 @@
                 if(!this.result) {
                     this.message = "Please fill in your answer.";
                 } else {
+                    switch(this.operation) {
+                        case '+':
+                            if((this.a + this.b) != this.result) {
+                                this.message = "Oops, that answer is not correct.";
+                                return;
+                            }
+                        default:
+                            if((this.a + this.b) != this.result) {
+                                this.message = "Oops, that answer is not correct.";
+                                return;
+                            }
+                        }
+                    
+                    // Default when correct answer
                     this.message = null;
                 }
             },
