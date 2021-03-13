@@ -44,14 +44,14 @@
                     </span>
                     <input v-model.number="result" type="number" required autocomplete="off" id="result"/>
                 </div>
-                <p>
+                <p v-bind:class="{ alert: message }">
                     {{ message }}
                 </p>
             </div>
 
             <div class="button-wrap">
             
-                <button v-on:click="reset" class="button button-block danger"/>
+                <button v-on:click="reset" class="button button-block danger" formnovalidate/>
                     <span class="material-icons">
                         replay
                     </span>
@@ -93,6 +93,8 @@
                 if(!this.b) {
                     this.b = this.getRandomInt(this.min, this.max);
                 }
+
+                this.message = null
             },
             /**
             * Returns a random integer between min (inclusive) and max (inclusive).
@@ -106,9 +108,18 @@
             reset: function() {
                 this.a = this.getRandomInt(this.min, this.max);
                 this.b = this.getRandomInt(this.min, this.max);
+                this.result = null;
+                this.message = null;
             },
             check: function() {
-                alert(this.a);
+                if(!this.result) {
+                    this.message = "Please fill in your answer.";
+                } else {
+                    this.message = null;
+                }
+            },
+            onSubmit: function() {
+                return false;
             }
         },
         mounted: function() {
