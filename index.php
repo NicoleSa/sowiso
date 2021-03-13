@@ -29,12 +29,28 @@
             
             <div>
                 <div class="field-wrap">
-                    <input type="text"required autocomplete="off"/>
+                    <span>
+                        {{ a }}
+                    </span>
+                    <span>
+                        {{ operation }}
+                    </span>
+                    <span>
+                        {{ b }}
+                    </span>
+                    <span>
+                        =
+                    </span>
+                    <input type="number" required autocomplete="off"/>
                 </div>
             </div>
 
-            <button type="submit" class="button button-block"/>Check</button>
+            <div class="button-wrap">
             
+                <button type="submit" class="button button-block"/>Check</button>
+            
+            </div>
+
             </form>
             
         </div><!-- tab-content -->
@@ -44,9 +60,31 @@
     <script>
       const App = new Vue({
         el: '#app',
-        data: {
-          exercise_type: 'addition',
+        // Form data
+        data() {
+            return {
+                // Arithmetic operation values
+                exercise_type: 'addition',
+                a: null,
+                operation: '+',
+                b: null,
+                result: null
+            }
         },
+        methods: {
+            init: function() {
+                if(!this.a) {
+                    this.a = '1';
+                }
+
+                if(!this.b) {
+                    this.b = '1';
+                }
+            }
+        },
+        mounted: function() {
+            this.init()
+        }
       })
     </script>
 </body>

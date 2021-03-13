@@ -37,6 +37,24 @@
     margin: 0 0 40px;
   }
   
+  .field-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+
+  .field-wrap span {
+    padding: 5px 5px 5px 5px;
+  }
+
+  .button-wrap {
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+
   .button {
     border: 0;
     outline: none;
