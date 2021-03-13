@@ -34,6 +34,14 @@
     width: 75px;
   }
 
+  form .column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-content: center;
+    align-items: flex-start;
+  }
+
   h1 {
     text-align: center;
     color: #ffffff;
@@ -54,7 +62,7 @@
 
   .button-wrap {
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-between;
   }
@@ -75,6 +83,14 @@
     background: #179b77;
   }
   
+  .button.danger {
+    background: tomato;
+  }
+
+  .button.danger:hover, .button.danger:focus {
+    background: crimson;
+  }
+
   .button-block {
     display: block;
   }  

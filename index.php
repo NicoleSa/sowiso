@@ -25,9 +25,10 @@
                 Exercise {{ exercise_type }}
             </h1>                    
             
-            <form action="/" method="post">
+            <!-- the submit event will no longer reload the page -->
+            <form v-on:submit.prevent="onSubmit">
             
-            <div>
+            <div class="column">
                 <div class="field-wrap">
                     <span>
                         {{ a }}
@@ -41,16 +42,24 @@
                     <span>
                         =
                     </span>
-                    <input type="number" required autocomplete="off" id="result"/>
+                    <input v-model.number="result" type="number" required autocomplete="off" id="result"/>
                 </div>
+                <p>
+                    {{ message }}
+                </p>
             </div>
 
             <div class="button-wrap">
             
-                <button type="submit" class="button button-block"/>Check</button>
+                <button v-on:click="reset" class="button button-block danger"/>
+                    <span class="material-icons">
+                        replay
+                    </span>
+                </button>
+                <button v-on:click="check" class="button button-block"/>Check</button>
             
             </div>
-
+            
             </form>
             
         </div><!-- tab-content -->
@@ -70,7 +79,8 @@
                 a: null,
                 operation: '+',
                 b: null,
-                result: null
+                result: null,
+                message: null
             }
         },
         methods: {
@@ -92,6 +102,13 @@
                 min = Math.ceil(min);
                 max = Math.floor(max);
                 return Math.floor(Math.random() * (max - min + 1)) + min;
+            },
+            reset: function() {
+                this.a = this.getRandomInt(this.min, this.max);
+                this.b = this.getRandomInt(this.min, this.max);
+            },
+            check: function() {
+                alert(this.a);
             }
         },
         mounted: function() {
