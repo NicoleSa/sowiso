@@ -57,7 +57,7 @@
 									=
 								</span>
 								<input v-model.number="result" type="number" required autocomplete="off" id="result"/>
-								<span class="material-icons success">
+								<span class="material-icons success" v-if="correct">
 									check_circle_outline
 								</span>
 							</div>
@@ -68,7 +68,7 @@
 
 						<div class="button-wrap">
 						
-							<button v-on:click="reset" class="button button-block danger" formnovalidate/>
+							<button v-on:click="reset" class="button button-block danger" formnovalidate type="button"/>
 								<span class="material-icons">
 									replay
 								</span>
@@ -101,6 +101,7 @@
                 operation: '+',
                 b: null,
                 result: null,
+				correct: false,
                 message: null
             }
         },
@@ -116,7 +117,8 @@
                     this.b = this.getRandomInt(this.min, this.max);
                 }
 
-                this.message = null
+				this.correct = false;
+                this.message = null;
             },
             /**
             * Returns a random integer between min (inclusive) and max (inclusive).
@@ -131,8 +133,17 @@
                 this.a = this.getRandomInt(this.min, this.max);
                 this.b = this.getRandomInt(this.min, this.max);
                 this.result = null;
+				this.correct = false;
                 this.message = null;
             },
+			setIncorrect: function() {
+				this.correct = false;
+				this.message = "Oops, that answer is not correct.";
+			},
+			setCorrect: function() {
+				this.correct = true;
+                this.message = null;
+			},
             check: function() {
                 if(!this.result) {
                     this.message = "Please fill in your answer.";
@@ -140,18 +151,18 @@
                     switch(this.operation) {
                         case '+':
                             if((this.a + this.b) != this.result) {
-                                this.message = "Oops, that answer is not correct.";
+								this.setIncorrect();
                                 return;
                             }
                         default:
                             if((this.a + this.b) != this.result) {
-                                this.message = "Oops, that answer is not correct.";
-                                return;
+								this.setIncorrect();
+							    return;
                             }
                         }
                     
-                    // Default when correct answer
-                    this.message = null;
+                	// Default when correct answer
+					this.setCorrect();
                 }
             },
             onSubmit: function() {
