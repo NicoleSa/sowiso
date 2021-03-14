@@ -56,7 +56,7 @@
 								<span>
 									=
 								</span>
-								<input v-model.number="result" type="number" required autocomplete="off" id="result"/>
+								<input v-model.number="result" v-bind:class="{ error: !valid }" type="number" autocomplete="off" id="result"/>
 								<span class="material-icons success" v-if="correct">
 									check_circle_outline
 								</span>
@@ -67,14 +67,13 @@
 						</div>
 
 						<div class="button-wrap">
-						
+							<!-- This button won't be triggered when pressing enter -->
 							<button v-on:click="reset" class="button button-block danger" formnovalidate type="button"/>
 								<span class="material-icons">
 									replay
 								</span>
 							</button>
 							<button v-on:click="check" class="button button-block"/>Check</button>
-						
 						</div>
                     
                     </form>
@@ -101,62 +100,81 @@
                 operation: '+',
                 b: null,
                 result: null,
+				valid: true,
 				correct: false,
                 message: null
             }
         },
         methods: {
-            // Initialize arithmetic operation
+            // Initialize random arithmetic operation
             init: function() {
 
-                if(!this.a) {
+				// When <a> value known from previous time closing browser
+				if(localStorage.a) {
+					this.a = localStorage.a;
+				} else {
                     this.a = this.getRandomInt(this.min, this.max);
                 }
 
-                if(!this.b) {
+				// When <b> value known from previous time closing browser
+				if(localStorage.b) {
+					this.b = localStorage.b;
+				} else {
                     this.b = this.getRandomInt(this.min, this.max);
                 }
 
-				this.correct = false;
-                this.message = null;
+				// When <result> value known from previous time closing browser
+				if(localStorage.result) {
+					this.result = localStorage.result;
+				}
             },
             /**
-            * Returns a random integer between min (inclusive) and max (inclusive).
-            * Using Math.round() will a non-uniform distribution!
+            * Returns a random integer between min (inclusive) and max (inclusive)
+            * drawn from an uniform distribution.
             */
             getRandomInt: function(min, max) {
-                min = Math.ceil(min);
-                max = Math.floor(max);
-                return Math.floor(Math.random() * (max - min + 1)) + min;
+				min = Math.ceil(min);
+  				max = Math.floor(max);
+  				return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
             },
+			// Resets content
             reset: function() {
                 this.a = this.getRandomInt(this.min, this.max);
                 this.b = this.getRandomInt(this.min, this.max);
                 this.result = null;
+				this.valid = true;
 				this.correct = false;
                 this.message = null;
             },
-			setIncorrect: function() {
+			// Change content when incorrect answer given
+			setIncorrect: function(errorMessage) {
+				this.valid = false;
 				this.correct = false;
-				this.message = "Oops, that answer is not correct.";
+				this.message = errorMessage;
 			},
+			// Change content when correct answer given
 			setCorrect: function() {
+				this.valid = true;
 				this.correct = true;
                 this.message = null;
 			},
+			// Checks input given by user
             check: function() {
+				// When no answer given
                 if(!this.result) {
-                    this.message = "Please fill in your answer.";
+					this.setIncorrect("Please fill in your answer.");
                 } else {
+					let errorMessage = "Oops, that answer is not correct.";
+					// Check for correct anwers given for different kind of operations
                     switch(this.operation) {
                         case '+':
                             if((this.a + this.b) != this.result) {
-								this.setIncorrect();
+								this.setIncorrect(errorMessage);
                                 return;
                             }
                         default:
                             if((this.a + this.b) != this.result) {
-								this.setIncorrect();
+								this.setIncorrect(errorMessage);
 							    return;
                             }
                         }
@@ -165,13 +183,25 @@
 					this.setCorrect();
                 }
             },
+			// Prevents form submitting
             onSubmit: function() {
                 return false;
             }
         },
         mounted: function() {
-            this.init()
-        }
+        	this.init();
+        },
+		watch: {
+			a(newA) {
+				localStorage.a = newA;
+			},
+			b(newB) {
+				localStorage.b = newB;
+			},
+			result(newResult) {
+				localStorage.result = newResult;
+			}
+		}
       })
     </script>
 </body>

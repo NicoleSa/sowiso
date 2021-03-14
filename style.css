@@ -191,3 +191,11 @@ h1 {
 .material-icons.success {
 	color: #69F0AE;
 }
+
+input {
+	border-radius: 2px;
+}
+
+input.error {
+	border: 2px solid #F44336;
+}
