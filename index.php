@@ -57,6 +57,9 @@
                                 =
                             </span>
                             <input v-model.number="result" type="number" required autocomplete="off" id="result"/>
+                            <span class="material-icons success">
+                                check_circle_outline
+                            </span>
                         </div>
                         <p v-bind:class="{ alert: message }">
                             {{ message }}
