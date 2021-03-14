@@ -5,6 +5,7 @@
   <meta charset="utf-8">
 
     <title>SOWISO</title>
+	<link rel="shortcut icon" type="image/jpg" href="favicon-96x96.png"/>
     <meta name="description" content="SOWISO">
     <meta name="author" content="Nicole Sang-Ajang">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
