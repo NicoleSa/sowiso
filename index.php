@@ -96,7 +96,8 @@
 			return lexeme; // symbols
 		});
 
-		lexer.addRule(/[0-9]/, function (lexeme) {
+		// BE AWARE ONLY NUMBERS IN THE RANGE OF 0-1000 are processed
+		lexer.addRule(/[1-9][0-9]{0,2}|1000/, function (lexeme) {
 			return lexeme; // numbers
 		});
 
@@ -142,8 +143,9 @@
                 description_title: 'Homework',
                 description: 'These exercises will evaluate your arithmetic skills.',
                 min: 1,
-                max: 10,
+                max: 10, // !! Can't be higher than the lex parser range i.e. 1000 !!
                 // Mathmetical expression
+				//expression_format: 'a + b * c',
 				expression_format: 'a + b',
 				expression: '',
                 result: null,
