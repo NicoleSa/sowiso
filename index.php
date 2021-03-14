@@ -84,8 +84,20 @@
         </div> <!-- /form -->
     </div>
 
+	<div class="cookie-warning" id="cookies">
+  		<h3 class="cookie-warning__title">We use cookies 🍪</h3>
+		<div class="cookie-warning__text">This site uses cookies to enhance your experience. Give 'em a go! Or don't! It's up to you!</div>
+		<div class="cookie-warning__button-group">
+		<button class="cookie-warning__button" onclick="acceptCookies()">Accept</button>
+		<button class="cookie-warning__button" onclick="location.href = '/'">Decline</button>
+    </div>
+</div>
 
 	<script>
+		function acceptCookies() {
+	  		document.getElementById("cookies").style.visibility = "hidden";
+		}
+
 		// Lexical analyzer
 		var lexer = new Lexer;
 
