@@ -42,40 +42,40 @@
                     <!-- the submit event will no longer reload the page -->
                     <form v-on:submit.prevent="onSubmit">
                     
-                    <div class="column">
-                        <div class="field-wrap">
-                            <span>
-                                {{ a }}
-                            </span>
-                            <span>
-                                {{ operation }}
-                            </span>
-                            <span>
-                                {{ b }}
-                            </span>
-                            <span>
-                                =
-                            </span>
-                            <input v-model.number="result" type="number" required autocomplete="off" id="result"/>
-                            <span class="material-icons success">
-                                check_circle_outline
-                            </span>
-                        </div>
-                        <p v-bind:class="{ alert: message }">
-                            {{ message }}
-                        </p>
-                    </div>
+						<div class="column">
+							<div class="field-wrap">
+								<span>
+									{{ a }}
+								</span>
+								<span>
+									{{ operation }}
+								</span>
+								<span>
+									{{ b }}
+								</span>
+								<span>
+									=
+								</span>
+								<input v-model.number="result" type="number" required autocomplete="off" id="result"/>
+								<span class="material-icons success">
+									check_circle_outline
+								</span>
+							</div>
+							<p v-bind:class="{ alert: message }">
+								{{ message }}
+							</p>
+						</div>
 
-                    <div class="button-wrap">
-                    
-                        <button v-on:click="reset" class="button button-block danger" formnovalidate/>
-                            <span class="material-icons">
-                                replay
-                            </span>
-                        </button>
-                        <button v-on:click="check" class="button button-block"/>Check</button>
-                    
-                    </div>
+						<div class="button-wrap">
+						
+							<button v-on:click="reset" class="button button-block danger" formnovalidate/>
+								<span class="material-icons">
+									replay
+								</span>
+							</button>
+							<button v-on:click="check" class="button button-block"/>Check</button>
+						
+						</div>
                     
                     </form>
                     
