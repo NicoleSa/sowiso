@@ -14,7 +14,12 @@
       rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
-
+	
+	<!-- For mathmetical expression evaluation -->
+	<!-- Lexer -->
+	<script src="node_modules/lex/lexer.js"></script>
+	<!-- Dijkstra's Shunting Yard Algorithm -->
+	<script src="shunt.js"></script>
 </head>
 
 <body>
@@ -45,13 +50,7 @@
 						<div class="column">
 							<div class="field-wrap">
 								<span>
-									{{ a }}
-								</span>
-								<span>
-									{{ operation }}
-								</span>
-								<span>
-									{{ b }}
+									{{ expression }}									
 								</span>
 								<span>
 									=
@@ -84,7 +83,56 @@
         </div> <!-- /form -->
     </div>
 
-    <script>
+
+	<script>
+		// Lexical analyzer
+		var lexer = new Lexer;
+
+		lexer.addRule(/\s+/, function () {
+			/* skip whitespace */
+		});
+
+		lexer.addRule(/[a-z]/, function (lexeme) {
+			return lexeme; // symbols
+		});
+
+		lexer.addRule(/[0-9]/, function (lexeme) {
+			return lexeme; // numbers
+		});
+
+		lexer.addRule(/[\(\+\-\*\/\)]/, function (lexeme) {
+			return lexeme; // punctuation (i.e. "(", "+", "-", "*", "/", ")")
+		});
+
+		// Parser
+		var factor = {
+			precedence: 2,
+			associativity: "left"
+		};
+
+		var term = {
+			precedence: 1,
+			associativity: "left"
+		};
+
+		var parser = new Parser({
+			"+": term,
+			"-": term,
+			"*": factor,
+			"/": factor
+		});
+
+		// Parses input stream of tokens to postfix notation
+		function parse(input) {
+			lexer.setInput(input);
+			var tokens = [], token;
+			while (token = lexer.lex()) tokens.push(token);
+			return parser.parse(tokens);
+		}
+	</script>
+
+	<!-- Vue component -->
+	<script>
       const App = new Vue({
         el: '#app',
         // Form data
@@ -95,10 +143,9 @@
                 description: 'These exercises will evaluate your arithmetic skills.',
                 min: 1,
                 max: 10,
-                // Arithmetic operation values
-                a: null,
-                operation: '+',
-                b: null,
+                // Mathmetical expression
+				expression_format: 'a + b',
+				expression: '',
                 result: null,
 				valid: true,
 				correct: false,
@@ -109,18 +156,11 @@
             // Initialize random arithmetic operation
             init: function() {
 
-				// When <a> value known from previous time closing browser
-				if(localStorage.a) {
-					this.a = localStorage.a;
+				// When <expression> known from previous time closing browser
+				if(localStorage.expression) {
+					this.expression = localStorage.expression;
 				} else {
-                    this.a = this.getRandomInt(this.min, this.max);
-                }
-
-				// When <b> value known from previous time closing browser
-				if(localStorage.b) {
-					this.b = localStorage.b;
-				} else {
-                    this.b = this.getRandomInt(this.min, this.max);
+                    this.expression = this.getRandomNumberExpression();
                 }
 
 				// When <result> value known from previous time closing browser
@@ -128,6 +168,26 @@
 					this.result = localStorage.result;
 				}
             },
+			// Returns desired expression format with random numbers
+			getRandomNumberExpression: function() {
+				var expression = [];
+
+				// Convert desired expression to expression containing random numbers
+				for (var i = 0; i < this.expression_format.length; i++) {
+					// When letter replace char with random number
+					if(this.isCharacterALetter(this.expression_format.charAt(i))) {
+						expression.push(this.getRandomInt(this.min, this.max));
+					// Otherwise leave untouched
+					} else {
+						expression.push(this.expression_format.charAt(i));
+					}
+				}
+
+				return expression.join('');
+			},
+			isCharacterALetter: function(char) {
+				return (/[a-zA-Z]/).test(char);
+			},
             /**
             * Returns a random integer between min (inclusive) and max (inclusive)
             * drawn from an uniform distribution.
@@ -137,10 +197,37 @@
   				max = Math.floor(max);
   				return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
             },
+			getExpressionValue: function() {
+				var stack = [];
+
+				var operator = {
+					"+": function (a, b) { return a + b; },
+					"-": function (a, b) { return a - b; },
+					"*": function (a, b) { return a * b; },
+					"/": function (a, b) { return a / b; }
+				};
+
+				// Parse expression to postfix notation and evaluate using stack
+				parse(this.expression).forEach(function (c) {
+					switch (c) {
+					case "+":
+					case "-":
+					case "*":
+					case "/":
+						var b =+ stack.pop();
+						var a =+ stack.pop();
+						stack.push(operator[c](a, b));
+						break;
+					default:
+						stack.push(c);
+				 	}
+				});
+
+				return stack.pop();
+			},
 			// Resets content
             reset: function() {
-                this.a = this.getRandomInt(this.min, this.max);
-                this.b = this.getRandomInt(this.min, this.max);
+                this.expression = this.getRandomNumberExpression();
                 this.result = null;
 				this.valid = true;
 				this.correct = false;
@@ -165,19 +252,11 @@
 					this.setIncorrect("Please fill in your answer.");
                 } else {
 					let errorMessage = "Oops, that answer is not correct.";
-					// Check for correct anwers given for different kind of operations
-                    switch(this.operation) {
-                        case '+':
-                            if((this.a + this.b) != this.result) {
-								this.setIncorrect(errorMessage);
-                                return;
-                            }
-                        default:
-                            if((this.a + this.b) != this.result) {
-								this.setIncorrect(errorMessage);
-							    return;
-                            }
-                        }
+					// Check for correct anwer
+					if(this.getExpressionValue() != this.result) {
+						this.setIncorrect(errorMessage);
+						return;
+					}
                     
                 	// Default when correct answer
 					this.setCorrect();
@@ -192,11 +271,9 @@
         	this.init();
         },
 		watch: {
-			a(newA) {
-				localStorage.a = newA;
-			},
-			b(newB) {
-				localStorage.b = newB;
+			// Save current newest state of expression and result input
+			expression(newExpression) {
+				localStorage.expression = newExpression;
 			},
 			result(newResult) {
 				localStorage.result = newResult;
